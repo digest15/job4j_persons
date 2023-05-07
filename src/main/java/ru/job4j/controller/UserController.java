@@ -1,8 +1,10 @@
 package ru.job4j.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.domain.Person;
 import ru.job4j.service.PersonsService;
 
@@ -17,9 +19,13 @@ public class UserController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<Person> signUp(@RequestBody Person person) {
+        personsService.validatePerson(person);
+
         return personsService.save(person)
                 .map(p -> ResponseEntity.ok().body(p))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "There is user with the same login"
+                ));
     }
 
     @GetMapping("/all")

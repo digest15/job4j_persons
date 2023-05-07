@@ -16,4 +16,13 @@ public interface PersonsService {
     boolean delete(int id);
 
     Optional<Person> findByLogin(String username);
+
+    default void validatePerson(Person person) throws IllegalArgumentException {
+        if (person.getLogin() == null || person.getPassword() == null) {
+            throw new IllegalArgumentException("login and password mustn't be null");
+        }
+        if (person.getLogin().isEmpty() || person.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("login and password mustn't be empty");
+        }
+    }
 }
