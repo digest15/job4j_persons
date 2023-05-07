@@ -14,4 +14,6 @@ public interface PersonsService {
     Optional<Person> save(Person person);
 
     boolean delete(int id);
+
+    Optional<Person> findByLogin(String username);
 }
