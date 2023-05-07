@@ -39,9 +39,9 @@ public class PersonsServiceImpl implements PersonsService {
     }
 
     @Override
-    public void delete(int id) {
-        Person person = new Person();
-        person.setId(id);
-        personRepository.delete(person);
+    public boolean delete(int id) {
+        Optional<Person> person = findById(id);
+        person.ifPresent(personRepository::delete);
+        return person.isPresent();
     }
 }

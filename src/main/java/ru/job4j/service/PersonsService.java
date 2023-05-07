@@ -13,5 +13,5 @@ public interface PersonsService {
 
     Optional<Person> save(Person person);
 
-    void delete(int id);
+    boolean delete(int id);
 }
