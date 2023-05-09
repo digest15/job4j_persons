@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.domain.Person;
+import ru.job4j.dto.PersonDto;
 import ru.job4j.service.PersonsService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,6 +59,17 @@ public class PersonController {
                 .map(p -> ResponseEntity.ok().body(p))
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "There was a problem when update Person"
+                ));
+    }
+
+    @PatchMapping("/")
+    public ResponseEntity<Person> patch(@RequestBody PersonDto person) {
+        personsService.validatePersonDto(person);
+
+        return personsService.patch(person)
+                .map(p -> ResponseEntity.ok().body(p))
+                .orElseThrow(() -> new ResponseStatusException(
+                             HttpStatus.NOT_FOUND, "There was a problem when patch Person"
                 ));
     }
 

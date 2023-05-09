@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.job4j.domain.Person;
+import ru.job4j.dto.PersonDto;
 import ru.job4j.repository.PersonRepository;
 
 import java.util.List;
@@ -29,6 +30,11 @@ public class PersonsServiceImpl implements PersonsService {
     @Override
     public Optional<Person> findByLogin(String login) {
         return personRepository.findByLogin(login);
+    }
+
+    @Override
+    public Optional<Person> patch(PersonDto person) {
+        return personRepository.patch(person);
     }
 
     @Override
