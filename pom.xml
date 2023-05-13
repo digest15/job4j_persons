@@ -52,12 +52,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>com.auth0</groupId>
 			<artifactId>java-jwt</artifactId>
 			<version>3.4.0</version>
@@ -74,6 +68,19 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+			<version>3.6.2</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.4.200</version>
@@ -85,7 +92,7 @@
 		<profile>
 			<id>test</id>
 			<properties>
-				<liquibase.config>db/liquibase_test.properties</liquibase.config>
+				<liquibase.config>classpath:db/liquibase_test.properties</liquibase.config>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -94,7 +101,7 @@
 		<profile>
 			<id>production</id>
 			<properties>
-				<liquibase.config>db/liquibase.properties</liquibase.config>
+				<liquibase.config>classpath:db/liquibase.properties</liquibase.config>
 			</properties>
 		</profile>
 	</profiles>
