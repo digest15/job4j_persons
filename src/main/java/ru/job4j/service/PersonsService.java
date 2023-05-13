@@ -20,21 +20,4 @@ public interface PersonsService {
 
     Optional<Person> patch(PersonDto person);
 
-    default void validatePerson(Person person) throws IllegalArgumentException {
-        if (person.getLogin() == null || person.getPassword() == null) {
-            throw new IllegalArgumentException("login and password mustn't be null");
-        }
-        if (person.getLogin().isEmpty() || person.getPassword().isEmpty()) {
-            throw new IllegalArgumentException("login and password mustn't be empty");
-        }
-    }
-
-    default void validatePersonDto(PersonDto person) throws IllegalArgumentException {
-        if (person.login() == null || person.password() == null) {
-            throw new IllegalArgumentException("login and password mustn't be null");
-        }
-        if (person.login().isEmpty() || person.password().isEmpty()) {
-            throw new IllegalArgumentException("login and password mustn't be empty");
-        }
-    }
 }

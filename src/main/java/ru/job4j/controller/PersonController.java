@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import ru.job4j.domain.Operation;
 import ru.job4j.domain.Person;
 import ru.job4j.dto.PersonDto;
 import ru.job4j.service.PersonsService;
@@ -41,9 +43,8 @@ public class PersonController {
     }
 
     @PostMapping("/")
+    @Validated(Operation.OnCreate.class)
     public ResponseEntity<Person> create(@RequestBody Person person) {
-        personsService.validatePerson(person);
-
         return personsService.save(person)
                 .map(p -> ResponseEntity.ok().body(p))
                 .orElseThrow(() -> new ResponseStatusException(
@@ -52,9 +53,8 @@ public class PersonController {
     }
 
     @PutMapping("/")
+    @Validated(Operation.OnUpdate.class)
     public ResponseEntity<Person> update(@RequestBody Person person) {
-        personsService.validatePerson(person);
-
         return personsService.save(person)
                 .map(p -> ResponseEntity.ok().body(p))
                 .orElseThrow(() -> new ResponseStatusException(
@@ -63,9 +63,8 @@ public class PersonController {
     }
 
     @PatchMapping("/")
+    @Validated(Operation.OnUpdate.class)
     public ResponseEntity<Person> patch(@RequestBody PersonDto person) {
-        personsService.validatePersonDto(person);
-
         return personsService.patch(person)
                 .map(p -> ResponseEntity.ok().body(p))
                 .orElseThrow(() -> new ResponseStatusException(
@@ -74,6 +73,7 @@ public class PersonController {
     }
 
     @DeleteMapping("/{id}")
+    @Validated(Operation.OnDelete.class)
     public ResponseEntity<Void> delete(@PathVariable int id) {
         if (!personsService.delete(id)) {
             throw new DeleteException(String.format("There is a problem with deleting person with id %d", id));
@@ -81,8 +81,8 @@ public class PersonController {
         return ResponseEntity.ok().build();
     }
 
-    @ExceptionHandler(value = { IllegalArgumentException.class })
-    public void exceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @ExceptionHandler(value = { DeleteException.class })
+    public void deleteExceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.setContentType("application/json");
         response.getWriter().write(objectMapper.writeValueAsString(new HashMap() { {
