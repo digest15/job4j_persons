@@ -39,14 +39,14 @@ public class PersonsServiceImpl implements PersonsService {
 
     @Override
     public Optional<Person> save(Person person) {
-        Optional<Person> saved = Optional.empty();
         try {
-            saved = Optional.of(personRepository.save(person));
+            personRepository.save(person);
         } catch (Exception e) {
             log.error("Save or Update was wrong", e);
         }
-
-        return saved;
+        return person.getId() != 0
+                ? Optional.of(person)
+                : Optional.empty();
     }
 
     @Override

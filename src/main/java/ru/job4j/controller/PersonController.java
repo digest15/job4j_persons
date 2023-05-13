@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/person")
@@ -35,46 +36,45 @@ public class PersonController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Person> findById(@PathVariable int id) {
-        return personsService.findById(id)
-                .map(p -> ResponseEntity.ok().body(p))
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, String.format("Not found Person with id %d", id)
-                ));
+        Optional<Person> person = personsService.findById(id);
+        if (person.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    String.format("Not found Person with id %d", id)
+            );
+        }
+        return ResponseEntity.ok(person.get());
     }
 
     @PostMapping("/")
-    @Validated(Operation.OnCreate.class)
-    public ResponseEntity<Person> create(@RequestBody Person person) {
-        return personsService.save(person)
-                .map(p -> ResponseEntity.ok().body(p))
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "There was a problem when save Person"
-                ));
+    public ResponseEntity<Person> create(@RequestBody @Validated(Operation.OnCreate.class) Person person) {
+        Optional<Person> saved = personsService.save(person);
+        if (saved.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There was a problem when save Person");
+        }
+        return ResponseEntity.ok(saved.get());
     }
 
     @PutMapping("/")
-    @Validated(Operation.OnUpdate.class)
-    public ResponseEntity<Person> update(@RequestBody Person person) {
-        return personsService.save(person)
-                .map(p -> ResponseEntity.ok().body(p))
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "There was a problem when update Person"
-                ));
+    public ResponseEntity<Person> update(@RequestBody @Validated(Operation.OnUpdate.class) Person person) {
+        Optional<Person> updated = personsService.save(person);
+        if (updated.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There was a problem when update Person");
+        }
+        return ResponseEntity.ok(updated.get());
     }
 
     @PatchMapping("/")
-    @Validated(Operation.OnUpdate.class)
-    public ResponseEntity<Person> patch(@RequestBody PersonDto person) {
-        return personsService.patch(person)
-                .map(p -> ResponseEntity.ok().body(p))
-                .orElseThrow(() -> new ResponseStatusException(
-                             HttpStatus.NOT_FOUND, "There was a problem when patch Person"
-                ));
+    public ResponseEntity<Person> patch(@RequestBody @Validated(Operation.OnUpdate.class) PersonDto person) {
+        Optional<Person> patched = personsService.patch(person);
+        if (patched.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There was a problem when patch Person");
+        }
+        return ResponseEntity.ok(patched.get());
     }
 
     @DeleteMapping("/{id}")
-    @Validated(Operation.OnDelete.class)
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> delete(@PathVariable @Validated(Operation.OnDelete.class) int id) {
         if (!personsService.delete(id)) {
             throw new DeleteException(String.format("There is a problem with deleting person with id %d", id));
         }
